@@ -4,13 +4,28 @@ import os
 from tusclient import client
 from typing import Dict, Optional
 
+from tusclient.exceptions import TusCommunicationError
+
 class DataSource:
     configs = {}
 
+    """
+        :Attributes:
+            - configs (dict): store configs
+        
+        :Constructor Args:
+            - configs (dict)
+    """
     def __init__(self, configs: Optional[Dict[str, str]] = None):
        self.set_configs(configs)
 
     def set_configs(self, configs: Dict[str, str]):
+        """
+        Set the options for the instance.
+        :param configs:
+        :return self
+        """
+
         self.configs = {
             'baseURL': 'https://centralise.platform.wondaris.com/api/oauth/v1.0/gcs',
             **self.configs,
@@ -20,6 +35,11 @@ class DataSource:
         return self
 
     def validate(self):
+        """
+        Validate the required configs
+        :return self
+        """
+
         if 'dataSet' not in self.configs or not self.configs['dataSet']:
             raise Exception('dataSet is required')
 
@@ -32,6 +52,11 @@ class DataSource:
         return self
 
     def get_upload_info(self):
+        """
+        Get the upload token from the Wondaris API via the data source, the data set and the token
+        :return upload_info (dict)
+        """
+
         url = f'{self.configs["baseURL"]}/{self.configs["dataSource"]}/{self.configs["dataSet"]}'
         headers = {
             'Authorization': f'Bearer {self.configs["token"]}',
@@ -48,12 +73,19 @@ class DataSource:
         return response.json()
 
     def upload_to_wondaris_file_store(self, file_path, *args, **kwargs):
+        """
+        Perform file upload to the Wondaris file store
+
+        :param file_path:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+
         if not os.path.isfile(file_path):
             raise Exception('File not found')
 
         upload_info = self.validate().get_upload_info()
-
-        upload_info['url'] = 'http://127.0.0.1:8080/upload'
 
         headers = {
             **(kwargs.get('headers', {}) or {}),
@@ -70,11 +102,19 @@ class DataSource:
         my_client = client.TusClient(url=upload_info['url'], headers=headers)
         uploader = my_client.uploader(file_path=file_path,
                            metadata=metadata,
+
                             # retry_delays=[0, 1000, 3000, 5000],
                            chunk_size=chunk_size,
                            *args, **kwargs)
 
-        uploader.upload()
+        try:
+            uploader.upload()
+        except TusCommunicationError as e:
+            content = e.response_content.decode('utf-8') if e.response_content else ''
 
-        print('upload complete')
+            # received a 500 error but the upload was completed
+            index = content.find("Cannot read properties of undefined (reading 'write')")
 
+            if index == -1:
+                print(e.response_content)
+                raise e
