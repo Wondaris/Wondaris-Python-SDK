@@ -1,4 +1,4 @@
-import wondaris_sdk
+from wondaris_sdk import wndrs_data_source
 import os
 from dotenv import load_dotenv
 
@@ -10,12 +10,17 @@ load_dotenv()
     data source & data set slugs (from Wondaris Centralise)
     and the token (in this example from en environment variable)
 """
-dataSource = wondaris_sdk.data_source.DataSource({
+dataSource = wndrs_data_source.WndrsDataSource({
     'baseURL': 'https://mdp.staging.wondaris.com/api/oauth/v1.0/gcs',
     'dataSource': 'demo-staging',
     'dataSet': 'demo-staging',
     'token': os.environ.get('TOKEN'),
 })
 
-# Upload the file
-dataSource.upload_to_wondaris_file_store('./example.csv')
+try:
+    # Upload the file
+    dataSource.upload_to_wondaris_file_store('./example.csv')
+
+    print('upload success')
+except Exception as e:
+    print(e)

@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 from tusclient.exceptions import TusCommunicationError
 
-class DataSource:
+class WndrsDataSource:
     configs = {}
 
     """
@@ -101,11 +101,9 @@ class DataSource:
 
         my_client = client.TusClient(url=upload_info['url'], headers=headers)
         uploader = my_client.uploader(file_path=file_path,
-                           metadata=metadata,
-
-                            # retry_delays=[0, 1000, 3000, 5000],
-                           chunk_size=chunk_size,
-                           *args, **kwargs)
+                                      metadata=metadata,
+                                      chunk_size=chunk_size,
+                                      *args, **kwargs)
 
         try:
             uploader.upload()
