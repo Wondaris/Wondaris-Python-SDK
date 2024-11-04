@@ -1,5 +1,3 @@
-from pydantic.datetime_parse import MAX_NUMBER
-
 # wondaris_sdk
 > This is the SDK that Wondaris Team has developed for applications using Python for the Wondaris services.
 > 
@@ -36,9 +34,9 @@ This document contains an introduction and example about how to use wondaris_sdk
 import os
 
 dataSource = wndrs_data_source.WndrsDataSource({
-    'baseURL': 'https://mdp.staging.wondaris.com/api/oauth/v1.0/gcs',
-    'dataSource': 'demo-staging',
-    'dataSet': 'demo-staging',
+    'baseURL': 'https://centralise.platform.wondaris.com/api/oauth/v1.0/gcs',
+    'dataSource': 'demo-data-source',
+    'dataSet': 'demo-data-set',
     'token': os.environ.get('TOKEN'),
 })
 
@@ -133,7 +131,7 @@ except Exception as e:
             The number of attempts the uploader should make in the case of a failed upload.
             If not specified, it defaults to 0.
 
-### retries
+#### retries
 
 _Default value:_ `0`
 

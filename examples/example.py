@@ -11,9 +11,9 @@ load_dotenv()
     and the token (in this example from en environment variable)
 """
 dataSource = wndrs_data_source.WndrsDataSource({
-    'baseURL': 'https://mdp.staging.wondaris.com/api/oauth/v1.0/gcs',
-    'dataSource': 'demo-staging',
-    'dataSet': 'demo-staging',
+    'baseURL': 'https://centralise.platform.wondaris.com/api/oauth/v1.0/gcs',
+    'dataSource': 'demo-data-source',
+    'dataSet': 'demo-data-set',
     'token': os.environ.get('TOKEN'),
 })
 
