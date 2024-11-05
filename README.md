@@ -79,7 +79,7 @@ except Exception as e:
 
 _Default value:_ ` 30 * 1024 * 1024` Bytes
 
-A number indicating the maximum size of a `PATCH` request body in bytes. With value (`Infinity`) means that tuspy will try to upload the entire file in one request. This setting is also required if the input file is a reader/readable stream.
+A number indicating the maximum size of a `PATCH` request body in bytes. With value (`MAXSIZE`) means that tuspy will try to upload the entire file in one request. This setting is also required if the input file is a reader/readable stream.
 
 **Warning:** **Do not set this value**, unless you are being forced to. The only two valid reasons for setting `chunk_size` are:
 
@@ -126,10 +126,6 @@ try:
 except Exception as e:
     print(e)
 ```
-
-  - retries (int):
-            The number of attempts the uploader should make in the case of a failed upload.
-            If not specified, it defaults to 0.
 
 #### retries
 
